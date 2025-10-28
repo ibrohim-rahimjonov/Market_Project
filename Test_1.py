@@ -73,10 +73,36 @@ class Data_Connect:
         self.connection.commit()
         print("User information Updated. ")
 
+class Sms_manager:
+    def __init__(self,connection):
+        self.connection = connection
+        self.cursor = connection.cursor()
+
+    def send_message(self,sender_id,receiver_id,messages_text):
+        """Here we add a message and send"""
+        query = """
+        INSERT INTO messages(sender_id, receiver_id,messages_text)
+        VALUES(%s, %s, %s)
+        """
+        self.cursor.execute(query,(sender_id,receiver_id,messages_text))
+        self.connection.commit()
+
 
 
 
 connector  = Data_Connect('call_centre', 'n71', '123')
+sms = Sms_manager(connector.connection)
+def sms_menu(sms):
+    while True:
+        print("============ Sms manager ============")
+        kod = input("1. Send a Message\n2. View a Message\n3. Delete a Message\n4. Exit ")
+        if kod == '1':
+            sender = input("Sender ID: ")
+            receiver = input("Receiver ID: ")
+            text = input("Message text: ")
+            sms.send_message(sender, receiver, text)
+            print("The message sent Successfully. ")
+        if kod == '2':
 
 
 def manager():
@@ -125,6 +151,9 @@ def manager():
                 fax=fax or None
             )
         elif kod == '6':
+            sms_menu(sms)
+
+        elif kod == '7':
             break
 
 manager()
