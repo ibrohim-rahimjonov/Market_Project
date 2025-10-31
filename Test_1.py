@@ -87,6 +87,22 @@ class Sms_manager:
         self.cursor.execute(query,(sender_id,receiver_id,messages_text))
         self.connection.commit()
 
+    def vies_message(self):
+        query = """
+        SELECT * FROM Messages """
+        self.cursor.execute(query)
+        rows = self.cursor.fetchall()
+        for row in rows:
+            print(row)
+
+    def delete_message(self,messages_text):
+        query = """
+        DELETE FROM Messages WHERE messages_text = %s """
+        self.cursor.execute(query, (messages_text,))
+        self.connection.commit()
+        print(f"Message with {messages_text} deleted successfully.")
+
+
 
 
 
@@ -102,12 +118,19 @@ def sms_menu(sms):
             text = input("Message text: ")
             sms.send_message(sender, receiver, text)
             print("The message sent Successfully. ")
-        if kod == '2':
+        elif kod == '2':
+            sms.vies_message()
+        elif kod == '3':
+            message = input("Enter a message you want to delete: ")
+            sms.delete_message(message)
+        elif kod == '4':
+            break
+
 
 
 def manager():
     while True:
-        kod = input("1. View all Users\n2. Add a User\n3. Delete a user\n4. Search a user\n5. Update User\n6. Exit  ")
+        kod = input("1. View all Users\n2. Add a User\n3. Delete a user\n4. Search a user\n5. Update User\n6. SMS Manager\n7. Exit  ")
         if kod == '1':
             print('============== USERS ================')
             connector.view_users()
